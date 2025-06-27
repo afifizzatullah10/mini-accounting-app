@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Afams Mini Accounting - Login</title>
+    
+    <style>
+        /* Reset dan Base Styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #333;
+        }
+
+        /* Container Utama */
+        .container {
+            background: white;
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 400px;
+            text-align: center;
+        }
+
+        /* Header Logo/Title */
+        .header {
+            margin-bottom: 30px;
+        }
+
+        .header h1 {
+            color: #667eea;
+            font-size: 2rem;
+            margin-bottom: 10px;
+            font-weight: bold;
+        }
+
+        .header p {
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        /* Form Login */
+        .login-form {
+            width: 100%;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+            text-align: left;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #555;
+            font-weight: 500;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #e1e5e9;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: border-color 0.3s ease;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        /* Tombol */
+        .btn {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+        }
+
+        .btn:active {
+            transform: translateY(0);
+        }
+
+        /* Pesan Error */
+        .error-message {
+            background: #fee;
+            color: #c33;
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            border-left: 4px solid #c33;
+            display: none;
+        }
+
+        /* Dashboard */
+        .dashboard {
+            display: none;
+            text-align: center;
+        }
+
+        .dashboard h2 {
+            color: #667eea;
+            font-size: 1.8rem;
+            margin-bottom: 20px;
+        }
+
+        .dashboard p {
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 1.1rem;
+        }
+
+        .logout-btn {
+            background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+            padding: 12px 30px;
+            width: auto;
+            display: inline-block;
+        }
+
+        .logout-btn:hover {
+            box-shadow: 0 10px 20px rgba(231, 76, 60, 0.3);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 480px) {
+            .container {
+                margin: 20px;
+                padding: 30px 20px;
+            }
+
+            .header h1 {
+                font-size: 1.6rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header / Judul Aplikasi -->
+        <div class="header">
+            <h1>Afams Mini Accounting</h1>
+            <p>Sistem Akuntansi Sederhana</p>
+        </div>
+
+        <!-- Form Login -->
+        <div id="loginSection" class="login-form">
+            <!-- Pesan Error -->
+            <div id="errorMessage" class="error-message">
+                Username atau Password salah.
+            </div>
+
+            <!-- Form Input -->
+            <form id="loginForm">
+                <div class="form-group">
+                    <label for="username">Username:</label>
+                    <input 
+                        type="text" 
+                        id="username" 
+                        name="username" 
+                        placeholder="Masukkan username Anda"
+                        required
+                    >
+                </div>
+
+                <div class="form-group">
+                    <label for="password">Password:</label>
+                    <input 
+                        type="password" 
+                        id="password" 
+                        name="password" 
+                        placeholder="Masukkan password Anda"
+                        required
+                    >
+                </div>
+
+                <button type="submit" class="btn">Masuk</button>
+            </form>
+        </div>
+
+        <!-- Dashboard (Hidden by default) -->
+        <div id="dashboardSection" class="dashboard">
+            <h2>Selamat Datang!</h2>
+            <p>Selamat datang di Afams Mini Accounting Dashboard</p>
+            <button id="logoutBtn" class="btn logout-btn">Keluar</button>
+        </div>
+    </div>
+
+    <script>
+        // ============================================
+        // KONFIGURASI KREDENSIAL LOGIN
+        // ============================================
+        const CREDENTIALS = {
+            username: 'admin',
+            password: '1234'
+        };
+
+        // ============================================
+        // KEY UNTUK LOCALSTORAGE
+        // ============================================
+        const STORAGE_KEY = 'afams_login_status';
+
+        // ============================================
+        // ELEMEN DOM
+        // ============================================
+        const loginSection = document.getElementById('loginSection');
+        const dashboardSection = document.getElementById('dashboardSection');
+        const loginForm = document.getElementById('loginForm');
+        const errorMessage = document.getElementById('errorMessage');
+        const logoutBtn = document.getElementById('logoutBtn');
+        const usernameInput = document.getElementById('username');
+        const passwordInput = document.getElementById('password');
+
+        // ============================================
+        // FUNGSI UNTUK MENAMPILKAN/MENYEMBUNYIKAN SECTION
+        // ============================================
+        function showLogin() {
+            loginSection.style.display = 'block';
+            dashboardSection.style.display = 'none';
+            errorMessage.style.display = 'none';
+            // Clear form inputs
+            usernameInput.value = '';
+            passwordInput.value = '';
+        }
+
+        function showDashboard() {
+            loginSection.style.display = 'none';
+            dashboardSection.style.display = 'block';
+            errorMessage.style.display = 'none';
+        }
+
+        function showError() {
+            errorMessage.style.display = 'block';
+        }
+
+        // ============================================
+        // FUNGSI UNTUK MENYIMPAN STATUS LOGIN
+        // ============================================
+        function saveLoginStatus() {
+            localStorage.setItem(STORAGE_KEY, 'logged_in');
+        }
+
+        function removeLoginStatus() {
+            localStorage.removeItem(STORAGE_KEY);
+        }
+
+        function isLoggedIn() {
+            return localStorage.getItem(STORAGE_KEY) === 'logged_in';
+        }
+
+        // ============================================
+        // FUNGSI VALIDASI LOGIN
+        // ============================================
+        function validateLogin(username, password) {
+            return username === CREDENTIALS.username && password === CREDENTIALS.password;
+        }
+
+        // ============================================
+        // EVENT HANDLER UNTUK FORM LOGIN
+        // ============================================
+        loginForm.addEventListener('submit', function(event) {
+            // Prevent default form submission
+            event.preventDefault();
+            
+            // Ambil nilai input
+            const username = usernameInput.value.trim();
+            const password = passwordInput.value.trim();
+            
+            // Validasi login
+            if (validateLogin(username, password)) {
+                // Login berhasil
+                saveLoginStatus();
+                showDashboard();
+                console.log('Login berhasil!');
+            } else {
+                // Login gagal
+                showError();
+                // Clear password field for security
+                passwordInput.value = '';
+                console.log('Login gagal - kredensial salah');
+            }
+        });
+
+        // ============================================
+        // EVENT HANDLER UNTUK TOMBOL LOGOUT
+        // ============================================
+        logoutBtn.addEventListener('click', function() {
+            // Hapus status login
+            removeLoginStatus();
+            // Tampilkan form login
+            showLogin();
+            console.log('Logout berhasil!');
+        });
+
+        // ============================================
+        // FUNGSI UNTUK CEK STATUS LOGIN SAAT HALAMAN DIMUAT
+        // ============================================
+        function checkLoginStatus() {
+            if (isLoggedIn()) {
+                // User sudah login, langsung ke dashboard
+                showDashboard();
+                console.log('User sudah login - menampilkan dashboard');
+            } else {
+                // User belum login, tampilkan form login
+                showLogin();
+                console.log('User belum login - menampilkan form login');
+            }
+        }
+
+        // ============================================
+        // INISIALISASI SAAT HALAMAN DIMUAT
+        // ============================================
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('Afams Mini Accounting - Sistem Login Dimuat');
+            checkLoginStatus();
+            
+            // Focus ke input username saat form login ditampilkan
+            if (!isLoggedIn()) {
+                usernameInput.focus();
+            }
+        });
+
+        // ============================================
+        // FITUR TAMBAHAN: ENTER KEY HANDLING
+        // ============================================
+        // Memungkinkan user menekan Enter untuk login
+        usernameInput.addEventListener('keypress', function(event) {
+            if (event.key === 'Enter') {
+                passwordInput.focus();
+            }
+        });
+
+        passwordInput.addEventListener('keypress', function(event) {
+            if (event.key === 'Enter') {
+                loginForm.dispatchEvent(new Event('submit'));
+            }
+        });
+
+        // ============================================
+        // DEBUG: FUNGSI HELPER UNTUK DEVELOPMENT
+        // ============================================
+        // Uncomment untuk debugging
+        // console.log('Kredensial untuk testing:');
+        // console.log('Username:', CREDENTIALS.username);
+        // console.log('Password:', CREDENTIALS.password);
+    </script>
+</body>
+</html>

@@ -1,0 +1,771 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Afams Mini Accounting - Login & Registrasi</title>
+    
+    <style>
+        /* ========================================== */
+        /* RESET DAN BASE STYLES */
+        /* ========================================== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #333;
+        }
+
+        /* ========================================== */
+        /* CONTAINER UTAMA */
+        /* ========================================== */
+        .container {
+            background: white;
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 450px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* ========================================== */
+        /* HEADER LOGO/TITLE */
+        /* ========================================== */
+        .header {
+            margin-bottom: 30px;
+        }
+
+        .header h1 {
+            color: #667eea;
+            font-size: 2rem;
+            margin-bottom: 10px;
+            font-weight: bold;
+        }
+
+        .header p {
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        /* ========================================== */
+        /* HALAMAN PILIHAN AWAL */
+        /* ========================================== */
+        .welcome-section {
+            text-align: center;
+        }
+
+        .welcome-section h2 {
+            color: #333;
+            margin-bottom: 20px;
+            font-size: 1.5rem;
+        }
+
+        .choice-buttons {
+            display: flex;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .choice-btn {
+            flex: 1;
+            padding: 15px;
+            border: 2px solid #667eea;
+            background: transparent;
+            color: #667eea;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .choice-btn:hover {
+            background: #667eea;
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        .choice-btn.primary {
+            background: #667eea;
+            color: white;
+        }
+
+        .choice-btn.primary:hover {
+            background: #5a6fd8;
+        }
+
+        /* ========================================== */
+        /* FORM STYLES */
+        /* ========================================== */
+        .form-section {
+            display: none;
+        }
+
+        .form-section.active {
+            display: block;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+            text-align: left;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #555;
+            font-weight: 500;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #e1e5e9;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: border-color 0.3s ease;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        /* ========================================== */
+        /* TOMBOL */
+        /* ========================================== */
+        .btn {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+        }
+
+        .btn:active {
+            transform: translateY(0);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: #667eea;
+            border: 2px solid #667eea;
+            margin-top: 10px;
+        }
+
+        .btn-secondary:hover {
+            background: #667eea;
+            color: white;
+        }
+
+        .logout-btn {
+            background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+            padding: 12px 30px;
+            width: auto;
+            display: inline-block;
+        }
+
+        .logout-btn:hover {
+            box-shadow: 0 10px 20px rgba(231, 76, 60, 0.3);
+        }
+
+        /* ========================================== */
+        /* PESAN ERROR DAN SUCCESS */
+        /* ========================================== */
+        .message {
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            display: none;
+        }
+
+        .error-message {
+            background: #fee;
+            color: #c33;
+            border-left: 4px solid #c33;
+        }
+
+        .success-message {
+            background: #efe;
+            color: #363;
+            border-left: 4px solid #363;
+        }
+
+        /* ========================================== */
+        /* DASHBOARD */
+        /* ========================================== */
+        .dashboard {
+            display: none;
+            text-align: center;
+        }
+
+        .dashboard.active {
+            display: block;
+        }
+
+        .dashboard h2 {
+            color: #667eea;
+            font-size: 1.8rem;
+            margin-bottom: 10px;
+        }
+
+        .dashboard .user-email {
+            color: #666;
+            font-size: 0.9rem;
+            margin-bottom: 20px;
+        }
+
+        .dashboard p {
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 1.1rem;
+        }
+
+        /* ========================================== */
+        /* RESPONSIVE DESIGN */
+        /* ========================================== */
+        @media (max-width: 480px) {
+            .container {
+                margin: 20px;
+                padding: 30px 20px;
+            }
+
+            .header h1 {
+                font-size: 1.6rem;
+            }
+
+            .choice-buttons {
+                flex-direction: column;
+            }
+        }
+
+        /* ========================================== */
+        /* ANIMASI LOADING */
+        /* ========================================== */
+        .loading {
+            opacity: 0.6;
+            pointer-events: none;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .form-section.active {
+            animation: fadeIn 0.3s ease;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- ========================================== -->
+        <!-- HEADER / JUDUL APLIKASI -->
+        <!-- ========================================== -->
+        <div class="header">
+            <h1>Afams Mini Accounting</h1>
+            <p>Sistem Akuntansi Sederhana</p>
+        </div>
+
+        <!-- ========================================== -->
+        <!-- HALAMAN PILIHAN AWAL -->
+        <!-- ========================================== -->
+        <div id="welcomeSection" class="welcome-section">
+            <h2>Selamat Datang!</h2>
+            <p>Silakan pilih untuk masuk atau daftar akun baru.</p>
+            <div class="choice-buttons">
+                <button id="showLoginBtn" class="choice-btn primary">Masuk</button>
+                <button id="showRegisterBtn" class="choice-btn">Daftar</button>
+            </div>
+        </div>
+
+        <!-- ========================================== -->
+        <!-- FORM REGISTRASI -->
+        <!-- ========================================== -->
+        <div id="registerSection" class="form-section">
+            <h2 style="margin-bottom: 20px; color: #333;">Daftar Akun Baru</h2>
+            
+            <!-- Pesan Error/Success -->
+            <div id="registerError" class="message error-message"></div>
+            <div id="registerSuccess" class="message success-message"></div>
+
+            <!-- Form Registrasi -->
+            <form id="registerForm">
+                <div class="form-group">
+                    <label for="registerEmail">Email:</label>
+                    <input 
+                        type="email" 
+                        id="registerEmail" 
+                        name="email" 
+                        placeholder="Masukkan email Anda"
+                        required
+                    >
+                </div>
+
+                <div class="form-group">
+                    <label for="registerPassword">Password:</label>
+                    <input 
+                        type="password" 
+                        id="registerPassword" 
+                        name="password" 
+                        placeholder="Minimal 4 karakter"
+                        required
+                        minlength="4"
+                    >
+                </div>
+
+                <div class="form-group">
+                    <label for="confirmPassword">Konfirmasi Password:</label>
+                    <input 
+                        type="password" 
+                        id="confirmPassword" 
+                        name="confirmPassword" 
+                        placeholder="Ulangi password Anda"
+                        required
+                    >
+                </div>
+
+                <button type="submit" class="btn">Daftar</button>
+                <button type="button" id="backToWelcomeFromRegister" class="btn btn-secondary">Kembali</button>
+            </form>
+        </div>
+
+        <!-- ========================================== -->
+        <!-- FORM LOGIN -->
+        <!-- ========================================== -->
+        <div id="loginSection" class="form-section">
+            <h2 style="margin-bottom: 20px; color: #333;">Masuk ke Akun</h2>
+            
+            <!-- Pesan Error -->
+            <div id="loginError" class="message error-message"></div>
+
+            <!-- Form Login -->
+            <form id="loginForm">
+                <div class="form-group">
+                    <label for="loginEmail">Email:</label>
+                    <input 
+                        type="email" 
+                        id="loginEmail" 
+                        name="email" 
+                        placeholder="Masukkan email Anda"
+                        required
+                    >
+                </div>
+
+                <div class="form-group">
+                    <label for="loginPassword">Password:</label>
+                    <input 
+                        type="password" 
+                        id="loginPassword" 
+                        name="password" 
+                        placeholder="Masukkan password Anda"
+                        required
+                    >
+                </div>
+
+                <button type="submit" class="btn">Masuk</button>
+                <button type="button" id="backToWelcomeFromLogin" class="btn btn-secondary">Kembali</button>
+            </form>
+        </div>
+
+        <!-- ========================================== -->
+        <!-- DASHBOARD -->
+        <!-- ========================================== -->
+        <div id="dashboardSection" class="dashboard">
+            <h2>Selamat Datang!</h2>
+            <div class="user-email">Masuk sebagai: <span id="userEmailDisplay"></span></div>
+            <p>Selamat datang di Afams Mini Accounting Dashboard</p>
+            <button id="logoutBtn" class="btn logout-btn">Keluar</button>
+        </div>
+    </div>
+
+    <script>
+        // ========================================== 
+        // KONFIGURASI DAN KONSTANTA
+        // ==========================================
+        const STORAGE_KEYS = {
+            USER_DATA: 'afams_user_data',
+            LOGIN_STATUS: 'afams_login_status',
+            CURRENT_USER: 'afams_current_user'
+        };
+
+        // ========================================== 
+        // ELEMEN DOM
+        // ==========================================
+        const welcomeSection = document.getElementById('welcomeSection');
+        const registerSection = document.getElementById('registerSection');
+        const loginSection = document.getElementById('loginSection');
+        const dashboardSection = document.getElementById('dashboardSection');
+
+        // Tombol navigasi
+        const showLoginBtn = document.getElementById('showLoginBtn');
+        const showRegisterBtn = document.getElementById('showRegisterBtn');
+        const backToWelcomeFromRegister = document.getElementById('backToWelcomeFromRegister');
+        const backToWelcomeFromLogin = document.getElementById('backToWelcomeFromLogin');
+        const logoutBtn = document.getElementById('logoutBtn');
+
+        // Form dan elemen registrasi
+        const registerForm = document.getElementById('registerForm');
+        const registerError = document.getElementById('registerError');
+        const registerSuccess = document.getElementById('registerSuccess');
+        const registerEmail = document.getElementById('registerEmail');
+        const registerPassword = document.getElementById('registerPassword');
+        const confirmPassword = document.getElementById('confirmPassword');
+
+        // Form dan elemen login
+        const loginForm = document.getElementById('loginForm');
+        const loginError = document.getElementById('loginError');
+        const loginEmail = document.getElementById('loginEmail');
+        const loginPassword = document.getElementById('loginPassword');
+
+        // Dashboard
+        const userEmailDisplay = document.getElementById('userEmailDisplay');
+
+        // ========================================== 
+        // FUNGSI UTILITAS UNTUK MENAMPILKAN HALAMAN
+        // ==========================================
+        function hideAllSections() {
+            welcomeSection.style.display = 'none';
+            registerSection.classList.remove('active');
+            loginSection.classList.remove('active');
+            dashboardSection.classList.remove('active');
+        }
+
+        function showWelcome() {
+            hideAllSections();
+            welcomeSection.style.display = 'block';
+            clearMessages();
+        }
+
+        function showRegister() {
+            hideAllSections();
+            registerSection.classList.add('active');
+            clearMessages();
+            registerEmail.focus();
+        }
+
+        function showLogin() {
+            hideAllSections();
+            loginSection.classList.add('active');
+            clearMessages();
+            loginEmail.focus();
+        }
+
+        function showDashboard(userEmail) {
+            hideAllSections();
+            dashboardSection.classList.add('active');
+            userEmailDisplay.textContent = userEmail;
+            clearMessages();
+        }
+
+        // ========================================== 
+        // FUNGSI UTILITAS UNTUK PESAN
+        // ==========================================
+        function clearMessages() {
+            registerError.style.display = 'none';
+            registerSuccess.style.display = 'none';
+            loginError.style.display = 'none';
+        }
+
+        function showRegisterError(message) {
+            registerError.textContent = message;
+            registerError.style.display = 'block';
+            registerSuccess.style.display = 'none';
+        }
+
+        function showRegisterSuccess(message) {
+            registerSuccess.textContent = message;
+            registerSuccess.style.display = 'block';
+            registerError.style.display = 'none';
+        }
+
+        function showLoginError(message) {
+            loginError.textContent = message;
+            loginError.style.display = 'block';
+        }
+
+        // ========================================== 
+        // FUNGSI VALIDASI
+        // ==========================================
+        function validateEmail(email) {
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            return emailRegex.test(email);
+        }
+
+        function validatePassword(password) {
+            return password.length >= 4;
+        }
+
+        function validatePasswordMatch(password, confirmPassword) {
+            return password === confirmPassword;
+        }
+
+        // ========================================== 
+        // FUNGSI UNTUK MENGELOLA DATA USER
+        // ==========================================
+        function saveUserData(email, password) {
+            const userData = getUserData();
+            userData[email] = {
+                email: email,
+                password: password,
+                registeredAt: new Date().toISOString()
+            };
+            localStorage.setItem(STORAGE_KEYS.USER_DATA, JSON.stringify(userData));
+        }
+
+        function getUserData() {
+            const data = localStorage.getItem(STORAGE_KEYS.USER_DATA);
+            return data ? JSON.parse(data) : {};
+        }
+
+        function checkUserExists(email) {
+            const userData = getUserData();
+            return userData.hasOwnProperty(email);
+        }
+
+        function validateUserCredentials(email, password) {
+            const userData = getUserData();
+            const user = userData[email];
+            return user && user.password === password;
+        }
+
+        // ========================================== 
+        // FUNGSI UNTUK MENGELOLA STATUS LOGIN
+        // ==========================================
+        function saveLoginStatus(email) {
+            localStorage.setItem(STORAGE_KEYS.LOGIN_STATUS, 'logged_in');
+            localStorage.setItem(STORAGE_KEYS.CURRENT_USER, email);
+        }
+
+        function removeLoginStatus() {
+            localStorage.removeItem(STORAGE_KEYS.LOGIN_STATUS);
+            localStorage.removeItem(STORAGE_KEYS.CURRENT_USER);
+        }
+
+        function isLoggedIn() {
+            return localStorage.getItem(STORAGE_KEYS.LOGIN_STATUS) === 'logged_in';
+        }
+
+        function getCurrentUser() {
+            return localStorage.getItem(STORAGE_KEYS.CURRENT_USER);
+        }
+
+        // ========================================== 
+        // EVENT HANDLERS UNTUK NAVIGASI
+        // ==========================================
+        showLoginBtn.addEventListener('click', function() {
+            showLogin();
+        });
+
+        showRegisterBtn.addEventListener('click', function() {
+            showRegister();
+        });
+
+        backToWelcomeFromRegister.addEventListener('click', function() {
+            showWelcome();
+        });
+
+        backToWelcomeFromLogin.addEventListener('click', function() {
+            showWelcome();
+        });
+
+        // ========================================== 
+        // EVENT HANDLER UNTUK REGISTRASI
+        // ==========================================
+        registerForm.addEventListener('submit', function(event) {
+            event.preventDefault();
+            
+            const email = registerEmail.value.trim();
+            const password = registerPassword.value;
+            const confirmPass = confirmPassword.value;
+
+            // Validasi email
+            if (!validateEmail(email)) {
+                showRegisterError('Format email tidak valid.');
+                return;
+            }
+
+            // Validasi password
+            if (!validatePassword(password)) {
+                showRegisterError('Password minimal 4 karakter.');
+                return;
+            }
+
+            // Validasi konfirmasi password
+            if (!validatePasswordMatch(password, confirmPass)) {
+                showRegisterError('Password dan konfirmasi password tidak sama.');
+                return;
+            }
+
+            // Cek apakah email sudah terdaftar
+            if (checkUserExists(email)) {
+                showRegisterError('Email sudah terdaftar. Silakan gunakan email lain.');
+                return;
+            }
+
+            // Simpan data user
+            saveUserData(email, password);
+            
+            // Tampilkan pesan sukses
+            showRegisterSuccess('Pendaftaran berhasil! Silakan login.');
+            
+            // Clear form
+            registerForm.reset();
+            
+            // Pindah ke login setelah 2 detik
+            setTimeout(function() {
+                showLogin();
+                loginEmail.value = email; // Pre-fill email di form login
+            }, 2000);
+
+            console.log('Registrasi berhasil untuk email:', email);
+        });
+
+        // ========================================== 
+        // EVENT HANDLER UNTUK LOGIN
+        // ==========================================
+        loginForm.addEventListener('submit', function(event) {
+            event.preventDefault();
+            
+            const email = loginEmail.value.trim();
+            const password = loginPassword.value;
+
+            // Validasi input kosong
+            if (!email || !password) {
+                showLoginError('Email dan password harus diisi.');
+                return;
+            }
+
+            // Validasi kredensial
+            if (validateUserCredentials(email, password)) {
+                // Login berhasil
+                saveLoginStatus(email);
+                showDashboard(email);
+                console.log('Login berhasil untuk email:', email);
+            } else {
+                // Login gagal
+                showLoginError('Email atau Password salah.');
+                loginPassword.value = ''; // Clear password field
+                console.log('Login gagal untuk email:', email);
+            }
+        });
+
+        // ========================================== 
+        // EVENT HANDLER UNTUK LOGOUT
+        // ==========================================
+        logoutBtn.addEventListener('click', function() {
+            removeLoginStatus();
+            showWelcome();
+            
+            // Clear form data
+            loginForm.reset();
+            registerForm.reset();
+            
+            console.log('Logout berhasil');
+        });
+
+        // ========================================== 
+        // FUNGSI UNTUK CEK STATUS LOGIN SAAT HALAMAN DIMUAT
+        // ==========================================
+        function checkLoginStatus() {
+            if (isLoggedIn()) {
+                const currentUser = getCurrentUser();
+                if (currentUser) {
+                    showDashboard(currentUser);
+                    console.log('User sudah login:', currentUser);
+                } else {
+                    // Jika ada inkonsistensi data, logout paksa
+                    removeLoginStatus();
+                    showWelcome();
+                }
+            } else {
+                showWelcome();
+                console.log('User belum login');
+            }
+        }
+
+        // ========================================== 
+        // FITUR TAMBAHAN: KEYBOARD NAVIGATION
+        // ==========================================
+        registerEmail.addEventListener('keypress', function(event) {
+            if (event.key === 'Enter') {
+                registerPassword.focus();
+            }
+        });
+
+        registerPassword.addEventListener('keypress', function(event) {
+            if (event.key === 'Enter') {
+                confirmPassword.focus();
+            }
+        });
+
+        confirmPassword.addEventListener('keypress', function(event) {
+            if (event.key === 'Enter') {
+                registerForm.dispatchEvent(new Event('submit'));
+            }
+        });
+
+        loginEmail.addEventListener('keypress', function(event) {
+            if (event.key === 'Enter') {
+                loginPassword.focus();
+            }
+        });
+
+        loginPassword.addEventListener('keypress', function(event) {
+            if (event.key === 'Enter') {
+                loginForm.dispatchEvent(new Event('submit'));
+            }
+        });
+
+        // ========================================== 
+        // INISIALISASI SAAT HALAMAN DIMUAT
+        // ==========================================
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('Afams Mini Accounting - Sistem Auth Dimuat');
+            checkLoginStatus();
+        });
+
+        // ========================================== 
+        // DEBUG: FUNGSI HELPER UNTUK DEVELOPMENT
+        // ==========================================
+        // Uncomment untuk melihat data yang tersimpan
+        // window.debugShowUserData = function() {
+        //     console.log('Data User:', getUserData());
+        //     console.log('Status Login:', isLoggedIn());
+        //     console.log('User Saat Ini:', getCurrentUser());
+        // };
+        
+        // Uncomment untuk reset semua data
+        // window.debugResetData = function() {
+        //     localStorage.removeItem(STORAGE_KEYS.USER_DATA);
+        //     localStorage.removeItem(STORAGE_KEYS.LOGIN_STATUS);
+        //     localStorage.removeItem(STORAGE_KEYS.CURRENT_USER);
+        //     console.log('Semua data telah dihapus');
+        //     location.reload();
+        // };
+    </script>
+</body>
+</html>

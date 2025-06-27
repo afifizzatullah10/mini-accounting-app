@@ -149,7 +149,7 @@
         }
 
         .card .amount {
-            font-size: 2.25rem;
+            font-size: 1.5rem;
             font-weight: 700;
             margin-bottom: 8px;
             letter-spacing: -0.02em;
@@ -409,6 +409,43 @@
 
         .transactions-table tbody tr:last-child td {
             border-bottom: none;
+        }
+
+        .transactions-table tbody tr.editing {
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%);
+            border: 2px solid #667eea;
+            border-radius: var(--radius-sm);
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+            transform: scale(1.02);
+        }
+
+        .transactions-table tbody tr.editing:hover {
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.15) 0%, rgba(118, 75, 162, 0.15) 100%);
+            transform: scale(1.02);
+        }
+
+        .transactions-table tbody tr.editing td {
+            border-color: #667eea;
+        }
+
+        .transactions-table tbody tr.editing input,
+        .transactions-table tbody tr.editing select {
+            border: 2px solid #667eea;
+            border-radius: var(--radius-sm);
+            padding: 6px 8px;
+            font-size: 0.875rem;
+            background: white !important;
+            color: #000000 !important;
+            -webkit-text-fill-color: #000000 !important;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 0 0 2px rgba(102, 126, 234, 0.1);
+        }
+
+        .transactions-table tbody tr.editing input:focus,
+        .transactions-table tbody tr.editing select:focus {
+            outline: none;
+            border-color: #4f46e5;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.2);
         }
 
         .filter-controls {
@@ -754,6 +791,11 @@
             background-clip: text;
         }
 
+        /* Mobile transactions cards - Default hidden, shown via media queries */
+        .mobile-transactions {
+            display: none;
+        }
+
         /* Responsive Design */
         @media (max-width: 768px) {
             .container {
@@ -787,13 +829,14 @@
                 min-width: unset;
             }
 
+            /* Hide traditional table on tablet and mobile */
             .transactions-table {
-                font-size: 0.8rem;
+                display: none;
             }
 
-            .transactions-table th,
-            .transactions-table td {
-                padding: 12px 16px;
+            /* Show mobile cards layout */
+            .mobile-transactions {
+                display: block;
             }
 
             .tab-button {
@@ -813,7 +856,7 @@
             }
 
             .card .amount {
-                font-size: 1.75rem;
+                font-size: 1.2rem;
             }
 
             .header h1 {
@@ -828,14 +871,118 @@
                 padding: 24px 20px;
             }
 
+            .mobile-transactions {
+                display: block;
+            }
+
             .transactions-table {
-                font-size: 0.75rem;
+                display: none;
             }
 
             .btn {
                 padding: 14px 24px;
                 font-size: 0.8rem;
             }
+        }
+
+        /* Mobile transactions card styling */
+        .transaction-card {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+            padding: 16px;
+            margin-bottom: 12px;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .transaction-card.income-row {
+            border-left: 4px solid #27ae60;
+        }
+
+        .transaction-card.expense-row {
+            border-left: 4px solid #e74c3c;
+        }
+
+        .transaction-card.editing {
+            border: 2px solid #667eea;
+            background-color: #f8f9fa;
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+
+        .card-date {
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+        }
+
+        .card-amount {
+            font-weight: 700;
+            font-size: 1.1rem;
+        }
+
+        .card-amount.amount-income {
+            color: #27ae60;
+        }
+
+        .card-amount.amount-expense {
+            color: #e74c3c;
+        }
+
+        .card-body {
+            margin-bottom: 12px;
+        }
+
+        .card-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+            font-size: 0.875rem;
+        }
+
+        .card-label {
+            color: var(--text-secondary);
+            font-weight: 500;
+        }
+
+        .card-value {
+            color: var(--text-primary);
+            text-align: right;
+            flex: 1;
+            margin-left: 12px;
+        }
+
+        .card-actions {
+            display: flex;
+            gap: 8px;
+            justify-content: flex-end;
+        }
+
+        .card-actions .btn {
+            padding: 8px 16px;
+            font-size: 0.8rem;
+            border-radius: var(--radius-sm);
+            border: none;
+            cursor: pointer;
+            font-weight: 500;
+        }
+
+        /* Mobile edit inputs */
+        .mobile-transactions .transaction-card.editing input,
+        .mobile-transactions .transaction-card.editing select {
+            width: 100%;
+            border: 2px solid #667eea;
+            border-radius: var(--radius-sm);
+            padding: 8px;
+            font-size: 0.875rem;
+            background: white !important;
+            color: #000000 !important;
+            -webkit-text-fill-color: #000000 !important;
+            margin-top: 4px;
         }
     </style>
 </head>
@@ -906,8 +1053,16 @@
                             <input type="text" id="customerName" required placeholder="Nama pelanggan">
                         </div>
                         <div class="form-group">
+                            <label for="incomeCategory">Kategori *</label>
+                            <select id="incomeCategory" required>
+                                <option value="">Pilih kategori</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-grid">
+                        <div class="form-group">
                             <label for="incomeAmount">Jumlah (Rp) *</label>
-                            <input type="number" id="incomeAmount" required placeholder="0" min="0">
+                            <input type="text" id="incomeAmount" required placeholder="0" inputmode="numeric">
                         </div>
                     </div>
                     <div class="form-group">
@@ -936,7 +1091,7 @@
                     <div class="form-grid">
                         <div class="form-group">
                             <label for="expenseAmount">Jumlah (Rp) *</label>
-                            <input type="number" id="expenseAmount" required placeholder="0" min="0">
+                            <input type="text" id="expenseAmount" required placeholder="0" inputmode="numeric">
                         </div>
                         <div class="form-group">
                             <label for="expenseDescription">Deskripsi *</label>
@@ -967,11 +1122,13 @@
                 <button class="btn export-btn" onclick="exportToPDF()">Export PDF</button>
             </div>
 
+            <!-- Desktop Table -->
             <table class="transactions-table" id="transactionsTable">
                 <thead>
                     <tr>
                         <th onclick="sortTable('date')">Tanggal ↕</th>
                         <th onclick="sortTable('type')">Jenis ↕</th>
+                        <th onclick="sortTable('category')">Kategori ↕</th>
                         <th onclick="sortTable('description')">Deskripsi ↕</th>
                         <th>Detail</th>
                         <th onclick="sortTable('amount')">Jumlah ↕</th>
@@ -980,12 +1137,19 @@
                 </thead>
                 <tbody id="transactionsBody">
                     <tr>
-                        <td colspan="6" class="empty-state">
+                        <td colspan="7" class="empty-state">
                             <p>Belum ada transaksi. Tambahkan transaksi pertama Anda!</p>
                         </td>
                     </tr>
                 </tbody>
             </table>
+
+            <!-- Mobile Cards -->
+            <div class="mobile-transactions" id="mobileTransactions" style="border: 2px solid red; min-height: 100px; background: #f0f0f0;">
+                <div class="empty-state" style="text-align: center; padding: 40px 20px; color: var(--text-secondary);">
+                    <p>Mobile view active! Belum ada transaksi. Tambahkan transaksi pertama Anda!</p>
+                </div>
+            </div>
         </div>
 
         <!-- Balance Sheet -->
@@ -1027,7 +1191,7 @@
                         </div>
                         <div class="form-group">
                             <label for="assetAmount">Nilai (Rp) *</label>
-                            <input type="number" id="assetAmount" required placeholder="0" min="0">
+                            <input type="text" id="assetAmount" required placeholder="0" inputmode="numeric">
                         </div>
                     </div>
                     <button type="submit" class="btn">Tambah Aset</button>
@@ -1061,7 +1225,7 @@
                         </div>
                         <div class="form-group">
                             <label for="liabilityAmount">Jumlah (Rp) *</label>
-                            <input type="number" id="liabilityAmount" required placeholder="0" min="0">
+                            <input type="text" id="liabilityAmount" required placeholder="0" inputmode="numeric">
                         </div>
                     </div>
                     <button type="submit" class="btn">Tambah Utang</button>
@@ -1093,7 +1257,7 @@
                         </div>
                         <div class="form-group">
                             <label for="equityAmount">Jumlah (Rp) *</label>
-                            <input type="number" id="equityAmount" required placeholder="0" min="0">
+                            <input type="text" id="equityAmount" required placeholder="0" inputmode="numeric">
                         </div>
                     </div>
                     <button type="submit" class="btn">Tambah Modal</button>
@@ -1307,6 +1471,25 @@
             document.getElementById('equityForm').addEventListener('submit', handleEquitySubmit);
             document.getElementById('typeFilter').addEventListener('change', renderTransactions);
             document.getElementById('searchFilter').addEventListener('input', renderTransactions);
+            
+            // Add real-time formatting for money input fields
+            const moneyInputs = ['incomeAmount', 'expenseAmount', 'assetAmount', 'liabilityAmount', 'equityAmount'];
+            moneyInputs.forEach(inputId => {
+                const input = document.getElementById(inputId);
+                if (input) {
+                    input.addEventListener('input', function(e) {
+                        const cursorPos = e.target.selectionStart;
+                        const oldLength = e.target.value.length;
+                        const formatted = formatNumberInput(e.target.value);
+                        e.target.value = formatted;
+                        
+                        // Adjust cursor position after formatting
+                        const newLength = formatted.length;
+                        const newCursorPos = cursorPos + (newLength - oldLength);
+                        e.target.setSelectionRange(newCursorPos, newCursorPos);
+                    });
+                }
+            });
         }
 
         // Setup report handlers
@@ -1352,8 +1535,9 @@
                 date: document.getElementById('incomeDate').value,
                 invoiceNumber: document.getElementById('invoiceNumber').value,
                 customerName: document.getElementById('customerName').value,
+                category: document.getElementById('incomeCategory').value,
                 description: document.getElementById('incomeDescription').value,
-                amount: parseFloat(document.getElementById('incomeAmount').value),
+                amount: parseFormattedInput(document.getElementById('incomeAmount').value),
                 timestamp: new Date().toISOString()
             };
 
@@ -1373,7 +1557,7 @@
                 date: document.getElementById('expenseDate').value,
                 category: document.getElementById('expenseCategory').value,
                 description: document.getElementById('expenseDescription').value,
-                amount: parseFloat(document.getElementById('expenseAmount').value),
+                amount: parseFormattedInput(document.getElementById('expenseAmount').value),
                 timestamp: new Date().toISOString()
             };
 
@@ -1393,7 +1577,7 @@
                 date: document.getElementById('assetDate').value,
                 category: document.getElementById('assetCategory').value,
                 description: document.getElementById('assetDescription').value,
-                amount: parseFloat(document.getElementById('assetAmount').value),
+                amount: parseFormattedInput(document.getElementById('assetAmount').value),
                 timestamp: new Date().toISOString()
             };
 
@@ -1412,7 +1596,7 @@
                 date: document.getElementById('liabilityDate').value,
                 category: document.getElementById('liabilityCategory').value,
                 description: document.getElementById('liabilityDescription').value,
-                amount: parseFloat(document.getElementById('liabilityAmount').value),
+                amount: parseFormattedInput(document.getElementById('liabilityAmount').value),
                 timestamp: new Date().toISOString()
             };
 
@@ -1431,7 +1615,7 @@
                 date: document.getElementById('equityDate').value,
                 category: document.getElementById('equityCategory').value,
                 description: document.getElementById('equityDescription').value,
-                amount: parseFloat(document.getElementById('equityAmount').value),
+                amount: parseFormattedInput(document.getElementById('equityAmount').value),
                 timestamp: new Date().toISOString()
             };
 
@@ -1457,9 +1641,270 @@
             updateBalanceSheet();
         }
 
+        // Edit transaction inline (desktop table)
+        function editTransaction(id) {
+            const transaction = transactions.find(t => t.id === id);
+            if (!transaction) {
+                showAlert('Transaksi tidak ditemukan!', 'error');
+                return;
+            }
+
+            // Cancel any existing edit
+            cancelEdit();
+
+            const row = document.querySelector(`tr[data-id="${id}"]`);
+            if (!row) return;
+
+            row.classList.add('editing');
+            
+            // Store original content
+            window.originalRowContent = row.innerHTML;
+            
+            // Create editable cells
+            const cells = row.children;
+            
+            // Date
+            cells[0].innerHTML = `<input type="date" value="${transaction.date}" id="edit-date-${id}">`;
+            
+            // Type (readonly)
+            cells[1].innerHTML = `<span class="badge ${transaction.type}">${transaction.type === 'income' ? 'Pemasukan' : 'Pengeluaran'}</span>`;
+            
+            // Category
+            const categoryOptions = transaction.type === 'income' ? incomeCategories : expenseCategories;
+            const categorySelect = categoryOptions.map(cat => `<option value="${cat}" ${cat === transaction.category ? 'selected' : ''}>${cat}</option>`).join('');
+            cells[2].innerHTML = `<select id="edit-category-${id}"><option value="">Pilih kategori</option>${categorySelect}</select>`;
+            
+            // Description
+            cells[3].innerHTML = `<input type="text" value="${transaction.description}" id="edit-description-${id}">`;
+            
+            // Detail (readonly for simplicity)
+            // Keep detail as-is
+            
+            // Amount
+            cells[5].innerHTML = `<input type="text" value="${formatNumberInput(transaction.amount.toString())}" id="edit-amount-${id}" inputmode="numeric">`;
+            
+            // Actions
+            cells[6].innerHTML = `
+                <button class="btn" style="background: #27ae60; padding: 5px 10px; font-size: 0.8rem; margin-right: 5px;" 
+                        onclick="saveEdit(${id})">
+                    Simpan
+                </button>
+                <button class="btn" style="background: #95a5a6; padding: 5px 10px; font-size: 0.8rem;" 
+                        onclick="cancelEdit()">
+                    Batal
+                </button>
+            `;
+
+            // Add format listener to amount field
+            const amountInput = document.getElementById(`edit-amount-${id}`);
+            if (amountInput) {
+                amountInput.addEventListener('input', function(e) {
+                    const cursorPos = e.target.selectionStart;
+                    const oldLength = e.target.value.length;
+                    const formatted = formatNumberInput(e.target.value);
+                    e.target.value = formatted;
+                    
+                    const newLength = formatted.length;
+                    const newCursorPos = cursorPos + (newLength - oldLength);
+                    e.target.setSelectionRange(newCursorPos, newCursorPos);
+                });
+            }
+        }
+
+        // Edit transaction inline (mobile cards)
+        function editMobileTransaction(id) {
+            const transaction = transactions.find(t => t.id === id);
+            if (!transaction) {
+                showAlert('Transaksi tidak ditemukan!', 'error');
+                return;
+            }
+
+            // Cancel any existing edit
+            cancelMobileEdit();
+
+            const card = document.querySelector(`.mobile-transactions .transaction-card[data-id="${id}"]`);
+            if (!card) return;
+
+            card.classList.add('editing');
+            
+            // Store original content
+            window.originalMobileCardContent = card.innerHTML;
+            
+            const categoryOptions = transaction.type === 'income' ? incomeCategories : expenseCategories;
+            const categorySelect = categoryOptions.map(cat => `<option value="${cat}" ${cat === transaction.category ? 'selected' : ''}>${cat}</option>`).join('');
+
+            // Create editable card
+            card.innerHTML = `
+                <div class="card-header">
+                    <span class="card-date">Edit Mode</span>
+                    <span class="card-amount">
+                        <span class="badge ${transaction.type}">${transaction.type === 'income' ? 'Pemasukan' : 'Pengeluaran'}</span>
+                    </span>
+                </div>
+                <div class="card-body">
+                    <div class="card-row">
+                        <span class="card-label">Tanggal:</span>
+                        <div class="card-value">
+                            <input type="date" value="${transaction.date}" id="mobile-edit-date-${id}">
+                        </div>
+                    </div>
+                    <div class="card-row">
+                        <span class="card-label">Kategori:</span>
+                        <div class="card-value">
+                            <select id="mobile-edit-category-${id}">
+                                <option value="">Pilih kategori</option>
+                                ${categorySelect}
+                            </select>
+                        </div>
+                    </div>
+                    <div class="card-row">
+                        <span class="card-label">Deskripsi:</span>
+                        <div class="card-value">
+                            <input type="text" value="${transaction.description}" id="mobile-edit-description-${id}">
+                        </div>
+                    </div>
+                    <div class="card-row">
+                        <span class="card-label">Jumlah:</span>
+                        <div class="card-value">
+                            <input type="text" value="${formatNumberInput(transaction.amount.toString())}" id="mobile-edit-amount-${id}" inputmode="numeric">
+                        </div>
+                    </div>
+                </div>
+                <div class="card-actions">
+                    <button class="btn" style="background: #27ae60; color: white;" 
+                            onclick="saveMobileEdit(${id})">
+                        Simpan
+                    </button>
+                    <button class="btn" style="background: #95a5a6; color: white;" 
+                            onclick="cancelMobileEdit()">
+                        Batal
+                    </button>
+                </div>
+            `;
+
+            // Add format listener to amount field
+            const amountInput = document.getElementById(`mobile-edit-amount-${id}`);
+            if (amountInput) {
+                amountInput.addEventListener('input', function(e) {
+                    const cursorPos = e.target.selectionStart;
+                    const oldLength = e.target.value.length;
+                    const formatted = formatNumberInput(e.target.value);
+                    e.target.value = formatted;
+                    
+                    const newLength = formatted.length;
+                    const newCursorPos = cursorPos + (newLength - oldLength);
+                    e.target.setSelectionRange(newCursorPos, newCursorPos);
+                });
+            }
+        }
+
+        // Save inline edit
+        function saveEdit(id) {
+            const transaction = transactions.find(t => t.id === id);
+            if (!transaction) return;
+
+            // Get edited values
+            const date = document.getElementById(`edit-date-${id}`)?.value;
+            const category = document.getElementById(`edit-category-${id}`)?.value;
+            const description = document.getElementById(`edit-description-${id}`)?.value;
+            const amount = document.getElementById(`edit-amount-${id}`)?.value;
+
+            // Validate required fields
+            if (!date || !category || !description || !amount) {
+                showAlert('Semua field harus diisi!', 'error');
+                return;
+            }
+
+            // Update transaction
+            const index = transactions.findIndex(t => t.id === id);
+            if (index !== -1) {
+                transactions[index] = {
+                    ...transactions[index],
+                    date: date,
+                    category: category,
+                    description: description,
+                    amount: parseFormattedInput(amount),
+                    timestamp: new Date().toISOString()
+                };
+
+                localStorage.setItem('transactions', JSON.stringify(transactions));
+                updateDashboard();
+                renderTransactions();
+                showAlert('Transaksi berhasil diupdate!', 'success');
+            }
+        }
+
+        // Save mobile edit
+        function saveMobileEdit(id) {
+            const transaction = transactions.find(t => t.id === id);
+            if (!transaction) return;
+
+            // Get edited values
+            const date = document.getElementById(`mobile-edit-date-${id}`)?.value;
+            const category = document.getElementById(`mobile-edit-category-${id}`)?.value;
+            const description = document.getElementById(`mobile-edit-description-${id}`)?.value;
+            const amount = document.getElementById(`mobile-edit-amount-${id}`)?.value;
+
+            // Validate required fields
+            if (!date || !category || !description || !amount) {
+                showAlert('Semua field harus diisi!', 'error');
+                return;
+            }
+
+            // Update transaction
+            const index = transactions.findIndex(t => t.id === id);
+            if (index !== -1) {
+                transactions[index] = {
+                    ...transactions[index],
+                    date: date,
+                    category: category,
+                    description: description,
+                    amount: parseFormattedInput(amount),
+                    timestamp: new Date().toISOString()
+                };
+
+                localStorage.setItem('transactions', JSON.stringify(transactions));
+                updateDashboard();
+                renderTransactions();
+                showAlert('Transaksi berhasil diupdate!', 'success');
+            }
+        }
+
+        // Cancel inline edit
+        function cancelEdit() {
+            const editingRow = document.querySelector('tr.editing');
+            if (editingRow && window.originalRowContent) {
+                editingRow.innerHTML = window.originalRowContent;
+                editingRow.classList.remove('editing');
+                window.originalRowContent = null;
+            }
+        }
+
+        // Cancel mobile edit
+        function cancelMobileEdit() {
+            const editingCard = document.querySelector('.mobile-transactions .transaction-card.editing');
+            if (editingCard && window.originalMobileCardContent) {
+                editingCard.innerHTML = window.originalMobileCardContent;
+                editingCard.classList.remove('editing');
+                window.originalMobileCardContent = null;
+            }
+        }
+
         // Delete transaction
         function deleteTransaction(id) {
             if (confirm('Apakah Anda yakin ingin menghapus transaksi ini?')) {
+                // Cancel edit if deleting the row being edited
+                const editingRow = document.querySelector('tr.editing');
+                if (editingRow && editingRow.dataset.id === id.toString()) {
+                    cancelEdit();
+                }
+                
+                // Cancel mobile edit if deleting the card being edited
+                const editingCard = document.querySelector('.mobile-transactions .transaction-card.editing');
+                if (editingCard && editingCard.dataset.id === id.toString()) {
+                    cancelMobileEdit();
+                }
+                
                 transactions = transactions.filter(t => t.id !== id);
                 localStorage.setItem('transactions', JSON.stringify(transactions));
                 updateDashboard();
@@ -1563,17 +2008,43 @@
 
         // Format currency to Indonesian Rupiah
         function formatCurrency(amount) {
+            // Ensure we're working with a proper integer to avoid precision issues
+            const numAmount = parseInt(amount, 10) || 0;
             return new Intl.NumberFormat('id-ID', {
                 style: 'currency',
                 currency: 'IDR',
                 minimumFractionDigits: 0,
-                maximumFractionDigits: 0
-            }).format(amount);
+                maximumFractionDigits: 0,
+                useGrouping: true
+            }).format(numAmount);
         }
 
-        // Render transactions table
+        // Format number with dots for input display (20000000 -> 20.000.000)
+        function formatNumberInput(value) {
+            if (!value) return '';
+            // Remove all non-digits
+            const numbers = value.replace(/\D/g, '');
+            if (!numbers) return '';
+            // Limit to reasonable number of digits (15 digits max for safety)
+            if (numbers.length > 15) {
+                return formatNumberInput(numbers.substring(0, 15));
+            }
+            // Add dots every 3 digits from right
+            return numbers.replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+        }
+
+        // Parse formatted input back to number (20.000.000 -> 20000000)
+        function parseFormattedInput(value) {
+            if (!value) return 0;
+            // Remove all dots and convert to integer to avoid precision issues
+            const cleanValue = value.toString().replace(/\./g, '');
+            return parseInt(cleanValue, 10) || 0;
+        }
+
+        // Render transactions table and mobile cards
         function renderTransactions() {
             const tbody = document.getElementById('transactionsBody');
+            const mobileContainer = document.getElementById('mobileTransactions');
             let filteredTransactions = [...transactions];
 
             // Apply filters
@@ -1602,8 +2073,8 @@
                     aVal = new Date(aVal);
                     bVal = new Date(bVal);
                 } else if (currentSort.field === 'amount') {
-                    aVal = parseFloat(aVal);
-                    bVal = parseFloat(bVal);
+                    aVal = Number(aVal);
+                    bVal = Number(bVal);
                 }
 
                 if (currentSort.direction === 'asc') {
@@ -1616,10 +2087,15 @@
             if (filteredTransactions.length === 0) {
                 tbody.innerHTML = `
                     <tr>
-                        <td colspan="6" class="empty-state">
+                        <td colspan="7" class="empty-state">
                             <p>Tidak ada transaksi yang ditemukan.</p>
                         </td>
                     </tr>
+                `;
+                mobileContainer.innerHTML = `
+                    <div class="empty-state" style="text-align: center; padding: 40px 20px; color: var(--text-secondary);">
+                        <p>Tidak ada transaksi yang ditemukan.</p>
+                    </div>
                 `;
                 return;
             }
@@ -1635,23 +2111,92 @@
                         ${transaction.invoiceNumber ? `<strong>Invoice:</strong> ${transaction.invoiceNumber}` : ''}
                     `;
                 } else {
-                    detailInfo = `<strong>Kategori:</strong> ${transaction.category}`;
+                    detailInfo = `<strong>Supplier/Vendor:</strong> ${transaction.vendor || 'N/A'}`;
                 }
 
                 return `
-                    <tr class="${rowClass}">
+                    <tr class="${rowClass}" data-id="${transaction.id}">
                         <td>${formatDate(transaction.date)}</td>
                         <td><span class="badge ${transaction.type}">${transaction.type === 'income' ? 'Pemasukan' : 'Pengeluaran'}</span></td>
+                        <td>${transaction.category || '-'}</td>
                         <td>${transaction.description}</td>
                         <td><small>${detailInfo}</small></td>
                         <td class="${amountClass}">${formatCurrency(transaction.amount)}</td>
                         <td>
+                            <button class="btn" style="background: #3498db; padding: 5px 10px; font-size: 0.8rem; margin-right: 5px;" 
+                                    onclick="editTransaction(${transaction.id})">
+                                Edit
+                            </button>
                             <button class="btn" style="background: #e74c3c; padding: 5px 10px; font-size: 0.8rem;" 
                                     onclick="deleteTransaction(${transaction.id})">
                                 Hapus
                             </button>
                         </td>
                     </tr>
+                `;
+            }).join('');
+
+            // Render mobile cards
+            mobileContainer.innerHTML = filteredTransactions.map(transaction => {
+                const rowClass = transaction.type === 'income' ? 'income-row' : 'expense-row';
+                const amountClass = transaction.type === 'income' ? 'amount-income' : 'amount-expense';
+                
+                let detailInfo = '';
+                if (transaction.type === 'income') {
+                    detailInfo = `
+                        <div class="card-row">
+                            <span class="card-label">Pelanggan:</span>
+                            <span class="card-value">${transaction.customerName || '-'}</span>
+                        </div>
+                        ${transaction.invoiceNumber ? `
+                        <div class="card-row">
+                            <span class="card-label">Invoice:</span>
+                            <span class="card-value">${transaction.invoiceNumber}</span>
+                        </div>` : ''}
+                    `;
+                } else {
+                    detailInfo = `
+                        <div class="card-row">
+                            <span class="card-label">Supplier/Vendor:</span>
+                            <span class="card-value">${transaction.vendor || 'N/A'}</span>
+                        </div>
+                    `;
+                }
+
+                return `
+                    <div class="transaction-card ${rowClass}" data-id="${transaction.id}">
+                        <div class="card-header">
+                            <span class="card-date">${formatDate(transaction.date)}</span>
+                            <span class="card-amount ${amountClass}">${formatCurrency(transaction.amount)}</span>
+                        </div>
+                        <div class="card-body">
+                            <div class="card-row">
+                                <span class="card-label">Jenis:</span>
+                                <span class="card-value">
+                                    <span class="badge ${transaction.type}">${transaction.type === 'income' ? 'Pemasukan' : 'Pengeluaran'}</span>
+                                </span>
+                            </div>
+                            <div class="card-row">
+                                <span class="card-label">Kategori:</span>
+                                <span class="card-value">${transaction.category || '-'}</span>
+                            </div>
+                            <div class="card-row">
+                                <span class="card-label">Deskripsi:</span>
+                                <span class="card-value">${transaction.description}</span>
+                            </div>
+                            ${detailInfo}
+                        </div>
+                        <div class="card-actions">
+                            <button class="btn" style="background: #3498db; color: white;" 
+                                    onclick="editMobileTransaction(${transaction.id})">
+                                Edit
+                            </button>
+                            <button class="btn" style="background: #e74c3c; color: white;" 
+                                    onclick="deleteTransaction(${transaction.id})">
+                                Hapus
+                            </button>
+                        </div>
+                    </div>
                 `;
             }).join('');
         }
@@ -1768,6 +2313,10 @@
             const expenseSelect = document.getElementById('expenseCategory');
             expenseSelect.innerHTML = '<option value="">Pilih kategori</option>' +
                 expenseCategories.map(category => `<option value="${category}">${category}</option>`).join('');
+            
+            const incomeSelect = document.getElementById('incomeCategory');
+            incomeSelect.innerHTML = '<option value="">Pilih kategori</option>' +
+                incomeCategories.map(category => `<option value="${category}">${category}</option>`).join('');
         }
 
         // Report generation functions
